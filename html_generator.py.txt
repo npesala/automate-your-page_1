@@ -1,0 +1,100 @@
+# My Python code to generate html output
+
+# My notes are assigned to a string variable
+mynotes = """
+SECTION-NAME: Computers and Computer Programs
+SECTION-DETAILS: A computer is a universal machine that can be programmed to do anything. A computer program 
+is a sequence of steps that a computer can follow to do something useful. It gives us a way to tell the 
+computer what steps to take.
+SECTION-NAME: Python
+SECTION-DETAILS: Python is a programming language. The python interpreter executes and understands the 
+programs by running them into a language the computer can understand.
+SECTION-NAME: What is a variable?
+SECTION-DETAILS: A variable gives names to keep track of values. We can use the variable to create a name and 
+use the name to refer to a variable. The way to introduce a variable is using an assignment statement.
+SECTION-NAME: The IF Function
+SECTION-DETAILS: To use the IF function, type if < expression >: then under that indent and type which will 
+define what code is run if the expression is true. If the expression is false it will skip this code. You can 
+also define an ELSE statement and code under it which gets executed when the expression is false.
+"""
+ 
+
+# Funtion to seperate the different notes inside the string
+def seperate_concepts(notes,concept_number):
+    counter = 0
+    while counter < concept_number:
+        counter = counter + 1
+        concept_start = notes.find("SECTION-NAME:")
+        concept_end = notes.find("SECTION-NAME:", concept_start+3)
+        if concept_end >= 0:
+            concept = notes[concept_start : concept_end]
+        else:
+            concept_end = len(notes)
+            concept = notes[concept_start :]
+        notes = notes[concept_end :]
+    return concept
+
+
+# Functions to seperate the section name and its contents
+def get_section(concept):
+    start_location = concept.find("SECTION-NAME:")
+    end_location = concept.find("SECTION-DETAILS:")
+    section = concept[start_location+14 : end_location-1]
+    return section
+    
+def get_contents(concept):
+    start_location = concept.find("SECTION-DETAILS:")
+    contents = concept[start_location+17 :]
+    return contents
+
+
+# Function to generate title of the notes 
+def generate_title_html():
+    html_text_0 = '''
+    <h1>Python notes - Stage 2</h1>
+    '''
+    return html_text_0
+
+# Function to generate each section's html 
+def generate_section_html(section, contents):
+   
+    html_text_1 = '''
+<div class="section">
+    <div class="section-name">
+      <b>  ''' + section 
+    html_text_2 = '''
+    </b>
+    </div>
+    <p class="section-details">
+        ''' + contents
+    html_text_3 = '''
+    </p>
+    </div>
+</div>'''
+    
+    html_text = html_text_1 + html_text_2 + html_text_3
+    return html_text
+
+
+
+# Generate the html code
+
+def generate_html(notes):
+    concept_number = 1
+    concept = seperate_concepts(notes, concept_number)
+    code_html = generate_title_html()
+    while concept !='':
+        section = get_section(concept)
+        contents = get_contents(concept)
+        concept_html = generate_section_html(section, contents)
+        code_html = code_html + concept_html
+        concept_number = concept_number +1
+        concept = seperate_concepts(notes,concept_number)
+    return code_html
+
+
+
+# Print the generated html
+print (generate_html(mynotes))
+
+ 
